@@ -5,6 +5,8 @@ description = ""
 authors = ["iiTzArcur <zefanjaj@gmail.com>"]
 readme = "README.md"
 packages = [{include = "ics_2000"}]
+keywords = ["ics_2000", "ics-2000", "klikaanklikuit"]
+repository = "https://github.com/zefanjajobse/ics_2000_python"
 
 [tool.poetry.dependencies]
 python = "^3.12"
