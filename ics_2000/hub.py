@@ -24,7 +24,7 @@ class Hub:
         self.home_id: str | None = None
         self.email = email
         self.password = password
-        self.local_address = ""
+        self.local_address: str | None = None
         self.device_statuses: dict[int, list[int]] = {}
         self.update_date = datetime.min
 
@@ -175,7 +175,7 @@ class Hub:
 
     def send_command_to_hub(self, command: Command, port):
         if self.local_address is None:
-            raise ValueError("Local address is undefined")
+            raise ValueError("Local address is not set")
 
         if not isinstance(port, int):
             raise ValueError("Port needs to be an integer")
