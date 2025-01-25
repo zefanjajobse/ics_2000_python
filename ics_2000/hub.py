@@ -14,21 +14,40 @@ from .model.entity_type import Entity_Type
 
 
 class Hub:
+    """KlikAanKlikUit ICS-2000 Control Station connection info
+
+
+    Attributes:
+        email: Email address of the account connected to the ICS-2000
+        password: Password of the account connected to the ICS-2000
+    """
+
     def __init__(self, email: str, password: str):
         self.devices: list[
             Device | DimDevice | SwitchDevice | ColorTemperatureDevice
         ] = []
+        """List of available devices within the authenticated home"""
         self.aes_key: str | None = None
+        """Authentication key"""
         self.mac: str | None = None
+        """MAC-Address of the KlikAanKlikUit ICS-2000"""
         self.home_name: str | None = None
+        """Name of the home given within KlikAanKlikUit"""
         self.home_id: str | None = None
+        """ID of the home"""
         self.email = email
+        """Email address of the account connected to the ICS-2000"""
         self.password = password
+        """Password of the account connected to the ICS-2000"""
         self.local_address: str | None = None
+        """Local IP address when you want to control it locally"""
         self.device_statuses: dict[int, list[int]] = {}
+        """Statuses of the devices"""
         self.update_date = datetime.min
+        """When the device statuses were last updated"""
 
-    def login(self):
+    def login(self) -> None:
+        """Logs in to the account given"""
         test = requests.post(
             f"{API_URL}/account.php",
             {
@@ -91,7 +110,10 @@ class Hub:
 
         return data
 
-    def get_devices(self):
+    def get_devices(
+        self,
+    ) -> list[Device | DimDevice | SwitchDevice | ColorTemperatureDevice]:
+        """Gets all devices connected to the hub"""
         if self.home_id is None:
             raise Exception("no home")
 
@@ -129,14 +151,19 @@ class Hub:
                 self.devices.append(SwitchDevice(self, device_data, device_config))
             else:
                 self.devices.append(Device(self, device_data, device_config))
+        return self.devices
 
     def create_command(
-        self, device_id: int, device_function: int, value: int, entity_type: Entity_Type
+        self,
+        device_id: int,
+        device_function: int,
+        value: int | float,
+        entity_type: Entity_Type,
     ) -> Command:
         if self.aes_key is None or self.mac is None:
             raise Exception("no mac or auth key")
 
-        device_functions: list[int] = []
+        device_functions: list[int | float] = []
 
         # if entity_type == Entity_Type.Group:
         #     device_functions = self.device_statuses.get(device_id, [])
@@ -159,6 +186,7 @@ class Hub:
         is_group: bool,
         send_local: bool,
     ) -> None:
+        """Change to the enabled state of the device"""
         command = self.create_command(
             device_id,
             on_function,
@@ -294,7 +322,7 @@ class Hub:
         self,
         device_id: int,
         color_temp_function: int,
-        color_temperature: int,
+        color_temperature: float,
         is_group: bool,
         send_local: bool,
     ):

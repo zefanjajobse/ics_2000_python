@@ -1,13 +1,15 @@
 import base64
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
-from Crypto.Random import get_random_bytes
 
 encoding = "utf-8"
 block_size = 16
-pad = lambda s: s + (block_size - len(s) % block_size) * chr(
-    block_size - len(s) % block_size
-)
+
+
+def pad(s):
+    return s + (block_size - len(s) % block_size) * chr(
+        block_size - len(s) % block_size
+    )
 
 
 def decrypt(string: str, aes: str) -> str:

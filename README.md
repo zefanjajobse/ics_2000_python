@@ -3,6 +3,10 @@ This library gives methods to control a ICS-2000 from KlikAanKlikUit. It is made
 
 ## Usage example:
 ```py
+from ics_2000.entities.dim_device import DimDevice
+from ics_2000.entities.switch_device import SwitchDevice
+from ics_2000.hub import Hub
+
 hub = Hub("example@email.com", "password")
 hub.login() # Authenticate
 hub.get_devices() # request devices

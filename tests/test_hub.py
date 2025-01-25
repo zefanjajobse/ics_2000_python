@@ -1,6 +1,7 @@
 import pytest
 from requests_mock import Mocker
 from ics_2000.config import API_URL
+from ics_2000.entities.switch_device import SwitchDevice
 from ics_2000.hub import Hub
 
 LOGIN_JSON_RES = {
@@ -62,18 +63,18 @@ def hub():
     return Hub("test@email.com", "Password")
 
 
-def auth(hub, requests_mock: Mocker):
+def auth(hub: Hub, requests_mock: Mocker):
     requests_mock.post(f"{API_URL}/account.php", json=LOGIN_JSON_RES)
     hub.login()
 
 
-def test_login(hub, requests_mock: Mocker):
+def test_login(hub: Hub, requests_mock: Mocker):
     auth(hub, requests_mock)
     assert hub.aes_key == "324fa6cd0d4dd01aa528db45a2c736a3"
     assert hub.home_name == "test home"
 
 
-def test_get_devices(hub, requests_mock: Mocker):
+def test_get_devices(hub: Hub, requests_mock: Mocker):
     auth(hub, requests_mock)
 
     requests_mock.post(f"{API_URL}/gateway.php", json=GATEWAY_JSON_RES)
@@ -81,7 +82,7 @@ def test_get_devices(hub, requests_mock: Mocker):
     assert len(hub.devices) > 0
 
 
-def test_get_device_status(hub, requests_mock: Mocker):
+def test_get_device_status(hub: Hub, requests_mock: Mocker):
     auth(hub, requests_mock)
 
     requests_mock.post(f"{API_URL}/gateway.php", json=GATEWAY_JSON_RES)
@@ -90,5 +91,5 @@ def test_get_device_status(hub, requests_mock: Mocker):
 
     requests_mock.post(f"{API_URL}/entity.php", json=ENTITY_JSON_RES)
     for device in hub.devices:
-        if device.name == "Hoge Deel":
-            assert device.get_on_status() == False
+        if device.name == "Hoge Deel" and type(device) is SwitchDevice:
+            assert device.get_on_status() is False

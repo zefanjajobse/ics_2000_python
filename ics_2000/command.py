@@ -13,10 +13,10 @@ class Command:
         hub_mac: str,
         device_id: int,
         device_function: int,
-        value: int,
+        value: int | float,
         aes_key: str,
         entity_type: Entity_Type,
-        device_functions: List[int] = [],
+        device_functions: List[int | float] = [],
     ):
         self.hub_mac = hub_mac
         self.device_id = device_id
