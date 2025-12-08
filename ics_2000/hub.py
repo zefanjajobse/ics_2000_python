@@ -49,7 +49,7 @@ class Hub:
         self.update_date = datetime.min
         """When the device statuses were last updated"""
 
-    def login(self) -> None:
+    def login(self) -> dict[str, str]:
         """Logs in to the account given"""
         self.homes = []
         response = requests.post(
