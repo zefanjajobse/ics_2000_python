@@ -8,7 +8,9 @@ from ics_2000.entities.switch_device import SwitchDevice
 from ics_2000.hub import Hub
 
 hub = Hub("example@email.com", "password")
-hub.login() # Authenticate
+homes = hub.login()  # Authenticate
+print(homes) # returns a dictionary of homes, ex: {"0": "test home}
+hub.select_home("132829") # Select the right home by id
 hub.get_devices() # request devices
 for device in hub.devices:
     if type(device) is SwitchDevice or type(device) is DimDevice:

@@ -1,6 +1,8 @@
 from datetime import datetime
 import json
 import requests
+
+from ics_2000.exceptions import InvalidAuthException, InvalidHomeException, InvalidMacOrAuthException, NoHomeSelectedException
 from .command import Command
 from .encryption import decrypt
 from .config import API_URL, device_configs
@@ -23,6 +25,7 @@ class Hub:
     """
 
     def __init__(self, email: str, password: str):
+        self.homes = []
         self.devices: list[
             Device | DimDevice | SwitchDevice | ColorTemperatureDevice
         ] = []
@@ -48,7 +51,8 @@ class Hub:
 
     def login(self) -> None:
         """Logs in to the account given"""
-        test = requests.post(
+        self.homes = []
+        response = requests.post(
             f"{API_URL}/account.php",
             {
                 "action": "login",
@@ -60,24 +64,28 @@ class Hub:
             },
         )
 
-        if test.status_code != 200:
-            if test.status_code == 401:
-                raise Exception("Incorrect username or password")
-            raise Exception(test.content)
+        if response.status_code != 200:
+            if response.status_code == 401:
+                raise InvalidAuthException("Incorrect username or password")
+            raise InvalidAuthException(response.content)
 
-        response = test.json()
-        if len(response.get("homes", [])) > 0:
-            home: dict = response["homes"][0]
-            self.aes_key = home.get("aes_key", "")
-            self.mac = home.get("mac", "")
-            self.home_id = home.get("home_id")
-            self.home_name = home.get("home_name")
-        else:
-            raise Exception("No homes")
+        data = response.json()
+        if data is not None:
+            self.homes = data.get("homes", [])
+        return dict([(home.get("home_id"), home.get("home_name"))for home in self.homes])
+
+    def select_home(self, home_id: str) -> None:
+        home = next(home for home in self.homes if home.get("home_id") == home_id)
+        if home is None:
+            raise InvalidHomeException()
+        self.aes_key = home.get("aes_key", "")
+        self.mac = home.get("mac", "")
+        self.home_id = home.get("home_id")
+        self.home_name = home.get("home_name")
 
     def get_raw_devices_data(self, decrypt_data, decrypt_status) -> list:
         if self.aes_key is None or self.mac is None:
-            raise Exception("no mac or auth key")
+            raise InvalidMacOrAuthException()
 
         device_info = requests.post(
             f"{API_URL}/gateway.php",
@@ -115,7 +123,7 @@ class Hub:
     ) -> list[Device | DimDevice | SwitchDevice | ColorTemperatureDevice]:
         """Gets all devices connected to the hub"""
         if self.home_id is None:
-            raise Exception("no home")
+            raise NoHomeSelectedException()
 
         entities = self.get_raw_devices_data(True, False)
         for device in entities:
@@ -161,7 +169,7 @@ class Hub:
         entity_type: Entity_Type,
     ) -> Command:
         if self.aes_key is None or self.mac is None:
-            raise Exception("no mac or auth key")
+            raise InvalidMacOrAuthException()
 
         device_functions: list[int | float] = []
 
@@ -264,7 +272,7 @@ class Hub:
         self, data: dict, decrypt_data: bool, decrypt_status: bool
     ) -> dict:
         if self.aes_key is None or self.mac is None:
-            raise Exception("no mac or auth key")
+            raise InvalidMacOrAuthException()
 
         if decrypt_data:
             data["data"] = json.loads(decrypt(data.get("data", ""), self.aes_key))

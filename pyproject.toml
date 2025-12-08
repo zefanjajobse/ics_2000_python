@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ics_2000_python"
-version = "0.1.2"
+version = "0.1.3"
 description = ""
 authors = ["iiTzArcur <zefanjaj@gmail.com>"]
 readme = "README.md"
