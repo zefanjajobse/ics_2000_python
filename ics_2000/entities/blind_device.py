@@ -11,12 +11,21 @@ class BlindDevice(Device):
             raise ValueError(
                 f"index_open not defined for '{self.device_data.name}'"
             )
+        if device_config.index_close is None:
+            raise ValueError(
+                f"index_close not defined for '{self.device_data.name}'"
+            )
+        if device_config.index_my is None:
+            raise ValueError(
+                f"index_my not defined for '{self.device_data.name}'"
+            )
 
-    def turn_open(self, send_local: bool = False) -> None:
+    def open(self, send_local: bool = False) -> None:
         """Turn off the device.
 
         Args:
           send_local: Use the ip_address set on the hub to talk to the device
+          send_local set to false, because it triggers a time out.
         """
         if self.device_config.index_open is None:
             return
@@ -29,11 +38,12 @@ class BlindDevice(Device):
             send_local,
         )
 
-    def turn_closed(self, send_local: bool = False) -> None:
+    def close(self, send_local: bool = False) -> None:
         """Turn off the device.
 
         Args:
           send_local: Use the ip_address set on the hub to talk to the device
+          send_local set to false, because it triggers a timeout.
         """
         if self.device_config.index_close is None:
             return
@@ -45,11 +55,12 @@ class BlindDevice(Device):
             self.is_group,
             send_local,
         )
-    def turn_my(self, send_local: bool = False) -> None:
+    def stop(self, send_local: bool = False) -> None:
         """Turn off the device.
 
         Args:
           send_local: Use the ip_address set on the hub to talk to the device
+          send_local set to false, because it triggers a timeout.
         """
         if self.device_config.index_my is None:
             return

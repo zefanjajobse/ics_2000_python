@@ -158,7 +158,7 @@ class Hub:
 
             elif device_config.on_off_function is not None:
                 self.devices.append(SwitchDevice(self, device_data, device_config))
-            elif device_config.index_open is not None:
+            elif device_config.index_open is not None and device_config.index_close is not None and device_config.index_my is not None:
                 self.devices.append(BlindDevice(self, device_data, device_config))
             else:
                 self.devices.append(Device(self, device_data, device_config))
