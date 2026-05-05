@@ -1,3 +1,4 @@
+
 from .model.device_config import DeviceConfig
 
 
@@ -94,8 +95,10 @@ device_configs: dict[int, DeviceConfig] = {
         model_name="AWMT Buil-in wall switch",
     ),
     23: DeviceConfig(
-        disabled=True,
         model_name="Somfy Actuator",
+        index_open=0,
+        index_my=1,
+        index_close=2,
     ),
     24: DeviceConfig(
         model_name="KAKU dimmable lightbulb",

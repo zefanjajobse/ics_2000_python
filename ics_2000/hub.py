@@ -6,6 +6,7 @@ from ics_2000.exceptions import InvalidAuthException, InvalidHomeException, Inva
 from .command import Command
 from .encryption import decrypt
 from .config import API_URL, device_configs
+from .entities.blind_device import BlindDevice
 from .entities.color_temperature_device import ColorTemperatureDevice
 from .entities.device import Device
 from .entities.dim_device import DimDevice
@@ -27,7 +28,7 @@ class Hub:
     def __init__(self, email: str, password: str):
         self.homes = []
         self.devices: list[
-            Device | DimDevice | SwitchDevice | ColorTemperatureDevice
+            Device | DimDevice | SwitchDevice | ColorTemperatureDevice | BlindDevice
         ] = []
         """List of available devices within the authenticated home"""
         self.aes_key: str | None = None
@@ -120,7 +121,7 @@ class Hub:
 
     def get_devices(
         self,
-    ) -> list[Device | DimDevice | SwitchDevice | ColorTemperatureDevice]:
+    ) -> list[Device | DimDevice | SwitchDevice | ColorTemperatureDevice | BlindDevice]:
         """Gets all devices connected to the hub"""
         if self.home_id is None:
             raise NoHomeSelectedException()
@@ -157,6 +158,8 @@ class Hub:
 
             elif device_config.on_off_function is not None:
                 self.devices.append(SwitchDevice(self, device_data, device_config))
+            elif device_config.index_open is not None and device_config.index_close is not None and device_config.index_my is not None:
+                self.devices.append(BlindDevice(self, device_data, device_config))
             else:
                 self.devices.append(Device(self, device_data, device_config))
         return self.devices

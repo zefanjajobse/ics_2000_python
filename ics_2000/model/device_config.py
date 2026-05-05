@@ -11,6 +11,9 @@ class DeviceConfig:
         color_temperature_function: Optional[int] = None,
         max_brightness: Optional[int] = None,
         max_color_temperature: Optional[int] = None,
+        index_open: Optional[int] = None,
+        index_close: Optional[int] = None,
+        index_my: Optional[int] = None,
     ):
         self.disabled = disabled
         self.model_name = model_name
@@ -19,3 +22,6 @@ class DeviceConfig:
         self.color_temperature_function = color_temperature_function
         self.max_brightness = max_brightness
         self.max_color_temperature = max_color_temperature
+        self.index_open = index_open
+        self.index_close = index_close
+        self.index_my = index_my
