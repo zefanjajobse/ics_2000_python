@@ -1,8 +1,10 @@
+from typing import Dict
+
 from .model.device_config import DeviceConfig
 
 
 API_URL = "https://trustsmartcloud2.com/ics2000_api"
-device_configs: dict[int, DeviceConfig] = {
+device_configs: Dict[int, DeviceConfig] = {
     1: DeviceConfig(
         model_name="APC3-2300R KAKU 443MHz Smartplug",
         on_off_function=0,
