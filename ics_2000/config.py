@@ -1,6 +1,4 @@
-
 from .model.device_config import DeviceConfig
-
 
 API_URL = "https://trustsmartcloud2.com/ics2000_api"
 device_configs: dict[int, DeviceConfig] = {

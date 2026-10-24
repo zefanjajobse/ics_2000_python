@@ -1,6 +1,3 @@
-from typing import List
-
-
 class SmartMeterDataCurrent:
     def __init__(
         self,
@@ -11,7 +8,7 @@ class SmartMeterDataCurrent:
         current_consumption: float,
         current_production: float,
         gas: float,
-        raw_data_array: List[float],
+        raw_data_array: list[float],
     ):
         self.power_consumed_low_tariff = power_consumed_low_tariff
         self.power_consumed = power_consumed

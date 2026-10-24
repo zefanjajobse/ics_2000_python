@@ -1,5 +1,5 @@
-from ..model.device_data import DeviceData
 from ..model.device_config import DeviceConfig
+from ..model.device_data import DeviceData
 from .device import Device
 
 

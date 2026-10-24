@@ -1,6 +1,3 @@
-from typing import Dict
-
-
 class DeviceData:
     def __init__(
         self,
@@ -9,8 +6,8 @@ class DeviceData:
         name: str,
         device: int,
         isGroup: bool,
-        status: Dict[str, Dict[str, int]],
-        data: Dict[str, Dict[str, int]],
+        status: dict[str, dict[str, int]],
+        data: dict[str, dict[str, int]],
     ):
         self.home_id = home_id
         self.id = id

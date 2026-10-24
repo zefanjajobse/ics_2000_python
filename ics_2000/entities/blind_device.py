@@ -4,21 +4,17 @@ from .device import Device
 
 
 class BlindDevice(Device):
-    def __init__(self, hub, device_data: device_data.DeviceData, device_config: DeviceConfig):
+    def __init__(
+        self, hub, device_data: device_data.DeviceData, device_config: DeviceConfig
+    ):
         super().__init__(hub, device_data, device_config)
 
         if device_config.index_open is None:
-            raise ValueError(
-                f"index_open not defined for '{self.device_data.name}'"
-            )
+            raise ValueError(f"index_open not defined for '{self.device_data.name}'")
         if device_config.index_close is None:
-            raise ValueError(
-                f"index_close not defined for '{self.device_data.name}'"
-            )
+            raise ValueError(f"index_close not defined for '{self.device_data.name}'")
         if device_config.index_my is None:
-            raise ValueError(
-                f"index_my not defined for '{self.device_data.name}'"
-            )
+            raise ValueError(f"index_my not defined for '{self.device_data.name}'")
 
     def open(self, send_local: bool = False) -> None:
         """Turn off the device.
@@ -55,6 +51,7 @@ class BlindDevice(Device):
             self.is_group,
             send_local,
         )
+
     def stop(self, send_local: bool = False) -> None:
         """Turn off the device.
 

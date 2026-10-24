@@ -1,7 +1,8 @@
 from typing import TYPE_CHECKING
+
+from ..model.device_config import DeviceConfig
 from ..model.device_data import DeviceData
 from .dim_device import DimDevice
-from ..model.device_config import DeviceConfig
 
 if TYPE_CHECKING:
     from ..hub import Hub

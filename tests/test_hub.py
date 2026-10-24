@@ -1,5 +1,6 @@
 import pytest
 from requests_mock import Mocker
+
 from ics_2000.config import API_URL
 from ics_2000.entities.switch_device import SwitchDevice
 from ics_2000.hub import Hub

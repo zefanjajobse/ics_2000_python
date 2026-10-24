@@ -1,7 +1,8 @@
 import json
-from typing import List
 import socket
+
 import requests
+
 from .config import API_URL
 from .encryption import encrypt
 from .model.entity_type import Entity_Type
@@ -16,7 +17,7 @@ class Command:
         value: int | float,
         aes_key: str,
         entity_type: Entity_Type,
-        device_functions: List[int | float] = [],
+        device_functions: list[int | float] = [],
     ):
         self.hub_mac = hub_mac
         self.device_id = device_id

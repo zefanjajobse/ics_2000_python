@@ -1,4 +1,4 @@
-from typing import List, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from ..model.device_data import DeviceData
 from ..model.entity_type import EntityType
@@ -25,7 +25,7 @@ class Entity:
         self.device_data = device_data
         self.is_group = entity_type == "group"
 
-    def get_status(self) -> List[int]:
+    def get_status(self) -> list[int]:
         return self._hub.get_device_status(self.entity_id)
 
     def get_hub(self) -> "Hub":

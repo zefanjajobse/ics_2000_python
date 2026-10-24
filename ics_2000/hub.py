@@ -1,11 +1,18 @@
-from datetime import datetime
 import json
+from datetime import datetime
+
 import requests
 
-from ics_2000.exceptions import InvalidAuthException, InvalidHomeException, InvalidMacOrAuthException, NoHomeSelectedException
+from ics_2000.exceptions import (
+    InvalidAuthException,
+    InvalidHomeException,
+    InvalidMacOrAuthException,
+    NoHomeSelectedException,
+)
+
 from .command import Command
-from .encryption import decrypt
 from .config import API_URL, device_configs
+from .encryption import decrypt
 from .entities.blind_device import BlindDevice
 from .entities.color_temperature_device import ColorTemperatureDevice
 from .entities.device import Device
@@ -73,7 +80,9 @@ class Hub:
         data = response.json()
         if data is not None:
             self.homes = data.get("homes", [])
-        return dict([(home.get("home_id"), home.get("home_name"))for home in self.homes])
+        return dict(
+            [(home.get("home_id"), home.get("home_name")) for home in self.homes]
+        )
 
     def select_home(self, home_id: str) -> None:
         home = next(home for home in self.homes if home.get("home_id") == home_id)
@@ -95,7 +104,7 @@ class Hub:
                 "email": self.email,
                 "mac": self.mac,
                 "password_hash": self.password,
-                "home_id": "",
+                "home_id": self.home_id,
             },
         )
         data = []
@@ -127,6 +136,7 @@ class Hub:
             raise NoHomeSelectedException()
 
         entities = self.get_raw_devices_data(True, False)
+        print(entities)
         for device in entities:
             device_data = DeviceData(
                 home_id=self.home_id,
@@ -158,7 +168,11 @@ class Hub:
 
             elif device_config.on_off_function is not None:
                 self.devices.append(SwitchDevice(self, device_data, device_config))
-            elif device_config.index_open is not None and device_config.index_close is not None and device_config.index_my is not None:
+            elif (
+                device_config.index_open is not None
+                and device_config.index_close is not None
+                and device_config.index_my is not None
+            ):
                 self.devices.append(BlindDevice(self, device_data, device_config))
             else:
                 self.devices.append(Device(self, device_data, device_config))

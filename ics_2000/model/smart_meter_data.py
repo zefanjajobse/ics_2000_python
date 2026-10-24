@@ -1,4 +1,3 @@
-from typing import Union
 from datetime import datetime
 
 Precision = str
@@ -7,7 +6,7 @@ Precision = str
 class SmartMeterData:
     def __init__(
         self,
-        date: Union[datetime, str, int],
+        date: datetime | str | int,
         power_consumed_low_tariff: float,
         power_consumed: float,
         power_produced_low_tariff: float,

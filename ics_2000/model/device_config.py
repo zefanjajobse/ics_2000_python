@@ -5,15 +5,15 @@ class DeviceConfig:
     def __init__(
         self,
         model_name: str,
-        disabled: Optional[bool] = None,
-        on_off_function: Optional[int] = None,
-        dim_function: Optional[int] = None,
-        color_temperature_function: Optional[int] = None,
-        max_brightness: Optional[int] = None,
-        max_color_temperature: Optional[int] = None,
-        index_open: Optional[int] = None,
-        index_close: Optional[int] = None,
-        index_my: Optional[int] = None,
+        disabled: bool | None = None,
+        on_off_function: int | None = None,
+        dim_function: int | None = None,
+        color_temperature_function: int | None = None,
+        max_brightness: int | None = None,
+        max_color_temperature: int | None = None,
+        index_open: int | None = None,
+        index_close: int | None = None,
+        index_my: int | None = None,
     ):
         self.disabled = disabled
         self.model_name = model_name

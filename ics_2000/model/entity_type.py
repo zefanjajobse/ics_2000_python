@@ -8,4 +8,4 @@ class Entity_Type(enum.Enum):
     Scene = "scene"
 
 
-EntityType = Union[Literal["module"], Literal["group"], Literal["scene"]]
+EntityType = Literal["module", "group", "scene"]

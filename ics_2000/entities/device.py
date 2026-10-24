@@ -1,7 +1,8 @@
 from typing import TYPE_CHECKING
-from .entity import Entity
-from ..model.device_data import DeviceData
+
 from ..model.device_config import DeviceConfig
+from ..model.device_data import DeviceData
+from .entity import Entity
 
 if TYPE_CHECKING:
     from ..hub import Hub
