@@ -1,4 +1,5 @@
 import json
+import logging
 from datetime import datetime
 
 import requests
@@ -22,6 +23,7 @@ from .model.device_config import DeviceConfig
 from .model.device_data import DeviceData
 from .model.entity_type import Entity_Type
 
+logger = logging.getLogger(__name__)
 
 class Hub:
     """KlikAanKlikUit ICS-2000 Control Station connection info
@@ -299,14 +301,48 @@ class Hub:
 
     def get_all_device_statuses(self):
         status_list = self.get_raw_device_statuses(False, True)
+
+        if not isinstance(status_list, list):
+            logger.warning(
+                "ICS-2000: invalid device status response; type=%s",
+                type(status_list).__name__,
+            )
+            return
+
         for device in status_list:
-            json_status = device["status"]
-            if "module" in json_status.keys():
-                self.device_statuses[device["id"]] = json_status["module"]["functions"]
-            elif "group" in json_status.keys():
-                self.device_statuses[device["id"]] = json_status["group"]["functions"]
+            if not isinstance(device, dict):
+                logger.debug("ICS-2000: skipping malformed device record")
+                continue
+
+            device_id = device.get("id")
+            json_status = device.get("status")
+
+            if device_id is None or not isinstance(json_status, dict):
+                logger.debug(
+                    "ICS-2000: skipping device with invalid status; id=%s",
+                    device_id,
+                )
+                continue
+
+            if "module" in json_status:
+                section = json_status["module"]
+            elif "group" in json_status:
+                section = json_status["group"]
             else:
-                Exception("Module or group data not found")
+                logger.debug(
+                    "ICS-2000: unsupported status structure; id=%s",
+                    device_id,
+                )
+                continue
+
+            if not isinstance(section, dict) or "functions" not in section:
+                logger.debug(
+                    "ICS-2000: missing device functions; id=%s",
+                    device_id,
+                )
+                continue
+
+            self.device_statuses[device_id] = section["functions"]
 
     def change_status(
         self,
