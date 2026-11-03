@@ -25,6 +25,7 @@ from .model.entity_type import Entity_Type
 
 logger = logging.getLogger(__name__)
 
+
 class Hub:
     """KlikAanKlikUit ICS-2000 Control Station connection info
 
@@ -138,7 +139,6 @@ class Hub:
             raise NoHomeSelectedException()
 
         entities = self.get_raw_devices_data(True, False)
-        print(entities)
         for device in entities:
             device_data = DeviceData(
                 home_id=self.home_id,
@@ -272,13 +272,17 @@ class Hub:
             "home_id": "",
             "entity_id": ids_string,
         }
-        status_list = requests.post(
+        response = requests.post(
             f"{API_URL}/entity.php",
             params,
-        ).json()
+        )
+        if response.status_code != 200:
+            raise Exception(
+                f"Unknown error while fetching device statuses, {response.status_code} response: {response.content}"
+            )
+        status_list = response.json()
 
         if len(status_list) == 0:
-            print(params)
             raise Exception(
                 f"Unknown error while fetching device statuses, response json: {status_list}"
             )
